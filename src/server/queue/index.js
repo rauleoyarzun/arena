@@ -51,6 +51,7 @@ class Queues {
 
     const options={};
     if(connection) {
+      console.log("connection");
       options.connection = connection
     } else {
       options.redis =redis || url || redisHost;
