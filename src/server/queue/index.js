@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const Bull = require('bull');
 const Bee = require('bee-queue');
 const path = require('path');
+const { Queue } = require( 'bullmq');
 
 class Queues {
   constructor(config) {
@@ -39,7 +39,7 @@ class Queues {
       return this._queues[queueHost][queueName];
     }
 
-    const { type, name, port, host, db, password, prefix, url, redis, tls } = queueConfig;
+    const { type, name, port, host, db, password, prefix, url, redis, tls, connection } = queueConfig;
 
     const redisHost = { host };
     if (password) redisHost.password = password;
@@ -49,9 +49,12 @@ class Queues {
 
     const isBee = type === 'bee';
 
-    const options = {
-      redis: redis || url || redisHost
-    };
+    const options={};
+    if(connection) {
+      options.connection = connection
+    } else {
+      options.redis =redis || url || redisHost;
+    }
     if (prefix) options.prefix = prefix;
 
     let queue;
@@ -67,7 +70,7 @@ class Queues {
       queue.IS_BEE = true;
     } else {
       if (queueConfig.createClient) options.createClient = queueConfig.createClient;
-      queue = new Bull(name, options);
+      queue = new Queue(name, options);
     }
 
     this._queues[queueHost] = this._queues[queueHost] || {};
