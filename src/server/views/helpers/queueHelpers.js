@@ -30,9 +30,12 @@ function formatBytes(num) {
 
 const Helpers = {
   getStats: async function(queue) {
-    await queue.client.info(); // update queue.client.serverInfo
+    let cluster = await queue.client;
+    let nodes = _.takeWhile(cluster.nodes(), function(node) { return node.serverInfo ? true : false; });
 
-    const stats = _.pickBy(queue.client.serverInfo, (value, key) => _.includes(this._usefulMetrics, key));
+    if(nodes.length === 0) return {};
+
+    const stats = _.pickBy(nodes[0].serverInfo, (value, key) => _.includes(this._usefulMetrics, key));
     stats.used_memory = formatBytes(parseInt(stats.used_memory, 10));
     stats.total_system_memory = formatBytes(parseInt(stats.total_system_memory, 10));
     return stats;

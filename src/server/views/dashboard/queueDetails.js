@@ -15,7 +15,7 @@ async function handler(req, res) {
   } else {
     jobCounts = await queue.getJobCounts();
   }
-  const stats = {};//await QueueHelpers.getStats(queue);
+  const stats = await QueueHelpers.getStats(queue);
 
   return res.render('dashboard/templates/queueDetails', {
     basePath,
