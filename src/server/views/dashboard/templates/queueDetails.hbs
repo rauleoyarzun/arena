@@ -32,14 +32,20 @@
         <h4 class="panel-title">Redis Statistics</h4>
       </div>
       <div class="panel-body">
-        <table class="table">
-          {{#each stats}}
-            <tr>
-              <th>{{ @key }}</th>
-              <th>{{ this }}</th>
-            </tr>
-          {{/each}}
-        </table>
+        <ul class="list-group">
+        {{#each stats}}
+            <li class="list-group-item">
+                <table class="table">
+                  {{#each this}}
+                    <tr>
+                      <th>{{ @key }}</th>
+                      <th>{{ this }}</th>
+                    </tr>
+                  {{/each}}
+                </table>
+            </li>
+        {{/each}}
+         </ul>
       </div>
     </div>
   </div>

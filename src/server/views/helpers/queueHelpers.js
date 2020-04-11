@@ -35,19 +35,26 @@ const Helpers = {
 
     if(nodes.length === 0) return {};
 
-    const stats = _.pickBy(nodes[0].serverInfo, (value, key) => _.includes(this._usefulMetrics, key));
-    stats.used_memory = formatBytes(parseInt(stats.used_memory, 10));
-    stats.total_system_memory = formatBytes(parseInt(stats.total_system_memory, 10));
+    const stats = [];
+    _.each(nodes, (node) => {
+      const stat = _.pickBy(node.serverInfo, (value, key) => _.includes(this._usefulMetrics, key));
+      stat.host = node.options.host;
+      stat.used_memory = formatBytes(parseInt(stat.used_memory, 10));
+      stat.maxmemory = formatBytes(parseInt(stat.maxmemory, 10));
+      stats.push(stat);
+    });
+
     return stats;
   },
 
   _usefulMetrics: [
     'redis_version',
-    'total_system_memory',
+    'maxmemory',
     'used_memory',
     'mem_fragmentation_ratio',
     'connected_clients',
-    'blocked_clients'
+    'blocked_clients',
+    'role'
   ],
 
   /**
